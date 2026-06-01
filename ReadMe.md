@@ -1,15 +1,16 @@
-# Lab 3 – Working with Amazon Elastic Block Store (EBS)
+# Build Your VPC and Launch a Web Server (AWS) 
 
 ## Author
 
 * **Name**: JOYCE PRISCILLA R
-* **Register Number**:212223060107
+* **Register Number**: 212223060107
+
 
 ---
 
 ## Objective
 
-The objective of this experiment is to understand how Amazon Elastic Block Store (EBS) provides persistent block-level storage for EC2 instances. This lab focuses on creating and attaching an EBS volume, formatting and mounting it on an EC2 instance, storing data, and verifying data persistence after instance reboot.
+The objective of this experiment is to understand how to design and configure a basic network infrastructure in AWS using a Virtual Private Cloud (VPC). This lab focuses on creating a VPC with a public subnet, configuring an Internet Gateway and route table, launching an EC2 instance, and hosting a simple web server that can be accessed over the internet.
 
 ---
 
@@ -17,94 +18,106 @@ The objective of this experiment is to understand how Amazon Elastic Block Store
 
 * Basic understanding of cloud computing concepts
 * AWS account or AWS Academy Lab access
-* An existing EC2 instance (Amazon Linux 2 preferred)
-* Basic knowledge of Linux commands
+* Web browser with internet connectivity
 
 ---
 
 ## Tools Used
 
 * AWS Management Console
+* Amazon VPC
 * Amazon EC2
-* Amazon EBS
-* SSH Client (Terminal / PuTTY)
+* Internet Gateway
+* Route Table
+* Security Groups
 
 ---
 
 ## Tasks Performed
 
-### Task 1: Explore Amazon EBS
+### Task 1: Create a VPC
 
-Explore the Amazon EBS service through the EC2 dashboard. Observe different volume types such as General Purpose SSD (gp2/gp3), Provisioned IOPS SSD, Throughput Optimized HDD, and Cold HDD.
+Create a new Virtual Private Cloud (VPC) with a private IP address range. The VPC acts as a logically isolated network in AWS where all other resources will be deployed.
 
----
+Students should create a VPC with an appropriate CIDR block (for example, 10.0.0.0/16) and assign a meaningful name.
 
-### Task 2: Create an EBS Volume
 
-Create a new EBS volume in the same Availability Zone as the EC2 instance. Choose an appropriate size and volume type.
+### Task 2: Create a Public Subnet
 
----
+Create a subnet inside the VPC to host public resources. Enable auto-assign public IPv4 so that instances launched in this subnet receive a public IP address.
 
-### Task 3: Attach EBS Volume to EC2 Instance
+The subnet should use a smaller CIDR range (for example, 10.0.1.0/24).
 
-Attach the created EBS volume to the running EC2 instance as an additional block device.
 
----
+### Task 3: Create and Attach Internet Gateway
 
-### Task 4: Format the EBS Volume
+Create an Internet Gateway (IGW) and attach it to the VPC. This allows communication between resources in the VPC and the internet.
 
-Connect to the EC2 instance using SSH and format the attached volume with a file system (for example, ext4).
 
----
+### Task 4: Configure Route Table
 
-### Task 5: Mount the EBS Volume
+Create a route table and add a default route (0.0.0.0/0) pointing to the Internet Gateway. Associate this route table with the public subnet.
 
-Mount the formatted volume to a directory in the EC2 instance (for example, /data or /mnt/ebs).
+This step ensures that traffic from the subnet can reach the internet.
 
----
 
-### Task 6: Store Data in EBS Volume
+### Task 5: Create Security Group
 
-Create files and directories inside the mounted EBS volume and store sample data.
+Create a security group to act as a virtual firewall for the EC2 instance. Configure inbound rules to allow:
 
----
+SSH on port 22
 
-### Task 7: Verify Data Persistence
+HTTP on port 80
 
-Reboot the EC2 instance and verify that the data stored in the EBS volume is still available after reboot.
 
----
+### Task 6: Launch EC2 Instance
+
+Launch an EC2 instance inside the public subnet using Amazon Linux 2 AMI and a suitable instance type (t2.micro).
+
+Attach the previously created security group and key pair.
+
+
+### Task 7: Configure Web Server
+
+Install and start a web server (Apache HTTPD) on the EC2 instance using user data or manual commands.
+
+Create a simple HTML page and verify that it can be accessed from a web browser using the public IP address of the instance.---
 
 ## Workflow (Student Explanation)
 
-1. Explore Amazon EBS (Elastic Block Store) in the EC2 dashboard and understand different volume types such as General Purpose SSD (gp2/gp3), Provisioned IOPS SSD, and HDD-based volumes. These are used for persistent block-level storage.
-2. Create a new EBS volume by selecting the required size and type. Ensure the volume is created in the same Availability Zone as the EC2 instance for successful attachment.
-3. Attach the created EBS volume to the running EC2 instance as an additional block storage device. This makes the volume accessible to the instance.
-4. Connect to the EC2 instance using SSH, format the volume with a file system (e.g., ext4), and mount it to a directory such as /mnt/ebs or /data for usage.
-5. Store files in the mounted volume and verify persistence by rebooting the instance. The data remains intact, showing that EBS provides durable and persistent storage.
+1. Create a Virtual Private Cloud (VPC) with a CIDR block (e.g., 10.0.0.0/16) to establish a logically isolated network in AWS. This forms the foundation where all cloud resources will reside.
+2. Create a public subnet (e.g., 10.0.1.0/24) inside the VPC and enable auto-assign public IP. This allows instances in the subnet to be accessible from the internet.
+3. Create an Internet Gateway (IGW) and attach it to the VPC. Then configure a route table with a default route (0.0.0.0/0) pointing to the IGW and associate it with the public subnet to enable internet access.
+4. Create a Security Group to act as a firewall. Allow inbound traffic for:
+
+SSH (port 22) → for remote access
+
+HTTP (port 80) → for web server access
+
+5. Launch an EC2 instance (Amazon Linux 2, t2.micro) in the public subnet, attach the security group, and configure a web server (Apache). Deploy a simple HTML page and verify access using the instance’s public IP.
 
 ---
 
 ## Output Screenshots (Attach 3)
 
-### Screenshot 1: EBS Volume Created
+### Screenshot 1: VPC and Subnet Details
 
-<img width="1919" height="909" alt="Screenshot 2026-03-11 154251" src="https://github.com/user-attachments/assets/e1d729d8-f2f4-4b1f-bbf9-f2b02abe99cb" />
-
----
-
-### Screenshot 2: EBS Volume Attached to EC2
-
-<img width="1918" height="898" alt="Screenshot 2026-03-11 154356" src="https://github.com/user-attachments/assets/74f459e3-3661-4039-84da-51db92dbbbb9" />
+<img width="1914" height="913" alt="Screenshot 2026-02-24 105947" src="https://github.com/user-attachments/assets/0af1e33d-45ea-4bb1-8534-03e284d05dac" />
 
 ---
 
-### Screenshot 3: Mounted Volume with Data
+### Screenshot 2: EC2 Instance Running
 
-<img width="1918" height="902" alt="Screenshot 2026-03-11 155250" src="https://github.com/user-attachments/assets/c3727fec-1eb9-4443-b975-1d442cf26086" />
+<img width="1902" height="911" alt="Screenshot 2026-02-24 111106" src="https://github.com/user-attachments/assets/ee98e4b0-21b1-4eaf-a0b5-523bf008bfd4" />
 
 ---
 
-## Result / Conclusion
+### Screenshot 3: Web Server Output in Browser
 
-This experiment demonstrated how Amazon EBS provides persistent storage for EC2 instances. By creating, attaching, formatting, and mounting an EBS volume, and by verifying data after reboot, the concept of durable block storage in the cloud was clearly understood.
+<img width="1805" height="804" alt="Screenshot 2026-02-24 111144" src="https://github.com/user-attachments/assets/03f66c23-578e-4daa-8c60-d662e02fdcfb" />
+
+---
+
+## Result 
+
+This experiment successfully demonstrated the creation of a custom VPC and deployment of a public-facing web server in AWS. By configuring networking components such as subnets, route tables, and security groups, and by launching an EC2 instance with a web server, the basic architecture of a cloud-hosted application was understood.
